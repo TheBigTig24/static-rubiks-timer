@@ -18,12 +18,26 @@ export default function Timer() {
     const [scramble, setScramble] = useState("");
     const [history, setHistory] = useState([]);
     const [averageFive, setAverageFive] = useState(0);
+    const [averageTwelve, setAverageTwelve] = useState(0);
+    const [averageHundred, setAverageHundred] = useState(0);
+    const [sessionAvg, setSessionAvg] = useState(0);
+    const [pb, setPB] = useState(0);
 
     const timer = useRef();
 
     useEffect(() => {
         setScramble(createScramble());
     }, []);
+
+    // TODO: make it render here instead of the function for the spacebar and timer
+    useEffect(() => {
+        console.log("RUNNING: " + history);
+        setAverageFive(updateAO5());
+        setAverageTwelve(updateAO12());
+        setAverageHundred(updateAO100());
+        setSessionAvg(updateSA());
+        setPB(updatePB());
+    }, [history]);
 
     // handles key press events in the input box
     const handleKeyPress = (e) => {
@@ -41,7 +55,7 @@ export default function Timer() {
                 // timer state is no longer running
                 setIsRunning(false);
                 // get and update average of 5
-                setAverageFive(updateAO5());
+                // setAverageFive(updateAO5());
             } else {
                 console.log("start: " + history)
                 // reset time to start at 0 every attempt
@@ -72,25 +86,137 @@ export default function Timer() {
     }
 
     function updateAO5() {
-        // ALL TIMES ARE STORED AS STRINGS, SO THEY FIRST NEED TO BE PARSED TO INTS, SO THE RESULT ISNT NaN
-        console.log(history);
-        let min = history[0];
-        let max = history[0];
+        let min = getTimeAsInt(0);
+        let max = getTimeAsInt(0);
         let sum = 0;
-        for (let i = 0; i < history.length; i++) {
-            if (history[i] < min) {
-                min = history[i];
+        for (let i = Math.max(0, history.length - 5); i < history.length; i++) {
+            let indexTime = getTimeAsInt(i);
+            if (indexTime < min) {
+                min = indexTime;
             }
-            if (history[i] > max) {
-                max = history[i];
+            if (indexTime > max) {
+                max = indexTime;
             }
-            sum += history[i];
+            sum += indexTime;
         }
 
         sum = sum - (max + min);
         sum = sum / 3;
-        console.log(sum);
-        return sum;
+        sum = sum.toFixed(3);
+
+        if (history.length < 5) {
+            return "-Less than 5 solves-";
+        } else {
+            return sum;
+        }
+    }
+
+    function updateAO12() {
+        let min = getTimeAsInt(0);
+        let max = getTimeAsInt(0);
+        let sum = 0;
+        for (let i = Math.max(0, history.length - 12); i < history.length; i++) {
+            let indexTime = getTimeAsInt(i);
+            if (indexTime < min) {
+                min = indexTime;
+            }
+            if (indexTime > max) {
+                max = indexTime;
+            }
+            sum += indexTime;
+        }
+
+        sum = sum - (max + min);
+        sum = sum / 10;
+        sum = sum.toFixed(3);
+
+        if (history.length < 12) {
+            return "-Less than 12 solves-";
+        } else {
+            return sum;
+        }
+    }
+
+    function updateAO100() {
+        let min = getTimeAsInt(0);
+        let max = getTimeAsInt(0);
+        let sum = 0;
+        for (let i = Math.max(0, history.length - 100); i < history.length; i++) {
+            let indexTime = getTimeAsInt(i);
+            if (indexTime < min) {
+                min = indexTime;
+            }
+            if (indexTime > max) {
+                max = indexTime;
+            }
+            sum += indexTime;
+        }
+
+        sum = sum - (max + min);
+        sum = sum / 98;
+        sum = sum.toFixed(3);
+
+        if (history.length < 100) {
+            return "-Less than 100 solves-";
+        } else {
+            return sum;
+        }
+    }
+
+    function updateSA() {
+        let min = getTimeAsInt(0);
+        let max = getTimeAsInt(0);
+        let sum = 0;
+        for (let i = 0; i < history.length; i++) {
+            let indexTime = getTimeAsInt(i);
+            if (indexTime < min) {
+                min = indexTime;
+            }
+            if (indexTime > max) {
+                max = indexTime;
+            }
+            sum += indexTime;
+        }
+
+        sum = sum - (max + min);
+        sum = sum / (history.length - 2);
+        sum = sum.toFixed(3);
+
+        if (history.length < 3) {
+            return "-Min. 3 Solves-";
+        } else {
+            return sum;
+        }
+    }
+
+    function updatePB() {
+        let min = getTimeAsInt(0);
+        for (let i = 0; i < history.length; i++) {
+            let indexTime = getTimeAsInt(i);
+            if (indexTime < min) {
+                min = indexTime;
+            }
+        }
+        if (history.length < 1) {
+            return "-No Solves-"
+        }
+        return min;
+    }
+
+    function getTimeAsInt(index) {
+        const time = "" + history[index];
+
+        const minutesStr = time.substring(0, 2);
+        const secondsStr = time.substring(3, 5);
+        const msStr = time.substring(6);
+
+        const minutes = parseInt(minutesStr);
+        const seconds = parseInt(secondsStr);
+        const ms = parseInt(msStr);
+
+        const timeInSec = (minutes * 60) + seconds + (ms / 100);
+
+        return timeInSec;
     }
         
 
@@ -106,10 +232,10 @@ export default function Timer() {
             <div className="grid-item2">
                 <div className="statistics">
                     <p>Ao5: { averageFive }</p>
-                    <p>Ao12: </p>
-                    <p>Ao100: </p>
-                    <p>Session Avg: </p>
-                    <p>Best Time: </p>
+                    <p>Ao12: { averageTwelve }</p>
+                    <p>Ao100: { averageHundred }</p>
+                    <p>Session Avg: { sessionAvg }</p>
+                    <p>Best Time: { pb }</p>
                 </div>
 
                 <div className="times-table">
