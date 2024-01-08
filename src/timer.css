@@ -31,6 +31,7 @@
     grid-column: 2 / 5;
 }
 .grid-item4 {
+    overflow: hidden;
     background-color: lightsalmon;
     border: 2px solid;
     grid-row: 2 / 5;
@@ -58,4 +59,26 @@
 
 .stopwatch h1 {
     font-size: 108px;
+}
+
+.statistics {
+    height: 40%;
+    border: 2px solid;
+}
+
+.times-table {
+    border: 2px  red solid;
+    overflow-y: scroll;
+    height: 60%;
+}
+
+.times-table-list {
+    border: 2px blue solid;
+    overflow-y: auto;
+    width: 100%;
+    height: 75px;
+}
+
+.times-table-list td {
+    border: 2px pink solid;
 }
