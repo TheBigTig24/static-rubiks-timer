@@ -1,16 +1,6 @@
 import './timer.css';
 import { useState, useRef, useEffect } from "react";
 
-function SingleTime() {
-    return (
-        <>
-        <tr>
-            <td>1</td>
-        </tr>
-        </>
-    );
-}
-
 export default function Timer() {
 
     const [time, setTime] = useState(0);
@@ -31,7 +21,6 @@ export default function Timer() {
 
     // TODO: make it render here instead of the function for the spacebar and timer
     useEffect(() => {
-        console.log("RUNNING: " + history);
         setAverageFive(updateAO5());
         setAverageTwelve(updateAO12());
         setAverageHundred(updateAO100());
@@ -44,20 +33,15 @@ export default function Timer() {
 
         if (e.keyCode == 32) {
             if (isRunning) {
-                console.log(history);
                 // stops timer
                 clearInterval(timer.current);
                 // adds current time to array
                 let attempt = document.getElementById("stopwatch-time").innerHTML;
                 let nextHistory = [...history, attempt];
                 setHistory(nextHistory);
-                console.log(history)
                 // timer state is no longer running
                 setIsRunning(false);
-                // get and update average of 5
-                // setAverageFive(updateAO5());
             } else {
-                console.log("start: " + history)
                 // reset time to start at 0 every attempt
                 setTime(0);
 
@@ -84,7 +68,21 @@ export default function Timer() {
     
         return minutes + ":" + seconds + "." + milliseconds;
     }
-
+    const addTwoSeconds = () => {
+        let latestSolveIndex = history.length - 1;
+        let asInt = getTimeAsInt(latestSolveIndex);
+        asInt += 2;
+        let backToString = switchTimeToString(asInt);
+        history[latestSolveIndex] = backToString;
+    }
+    const removeSingle = () => {
+        let latestSolveIndex = history.length - 1;
+        history.splice(latestSolveIndex, 1);
+    }
+    const clearAll = () => {
+        history.splice(0, history.length);
+    }
+    // calculates average of 5
     function updateAO5() {
         let min = getTimeAsInt(0);
         let max = getTimeAsInt(0);
@@ -110,7 +108,7 @@ export default function Timer() {
             return sum;
         }
     }
-
+    // calculates average of 12
     function updateAO12() {
         let min = getTimeAsInt(0);
         let max = getTimeAsInt(0);
@@ -136,7 +134,7 @@ export default function Timer() {
             return sum;
         }
     }
-
+    // calculates average of 100
     function updateAO100() {
         let min = getTimeAsInt(0);
         let max = getTimeAsInt(0);
@@ -162,7 +160,7 @@ export default function Timer() {
             return sum;
         }
     }
-
+    // calculates session average
     function updateSA() {
         let min = getTimeAsInt(0);
         let max = getTimeAsInt(0);
@@ -188,7 +186,7 @@ export default function Timer() {
             return sum;
         }
     }
-
+    // calculates best time
     function updatePB() {
         let min = getTimeAsInt(0);
         for (let i = 0; i < history.length; i++) {
@@ -203,6 +201,7 @@ export default function Timer() {
         return min;
     }
 
+    //parses time to int given an index of the history array
     function getTimeAsInt(index) {
         const time = "" + history[index];
 
@@ -218,6 +217,28 @@ export default function Timer() {
 
         return timeInSec;
     }
+    function switchTimeToString(time) {
+        let minutes = Math.floor(time / 60);
+        let seconds = Math.floor(time % 60);
+        let milliseconds = (time % 60).toFixed(5) / 100;
+
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+        milliseconds = "" + milliseconds;
+        milliseconds = milliseconds.substring(4,6);
+
+        return minutes + ":" + seconds + "." + milliseconds;
+    }
+
+    const timesTable = history.map((time) => {
+        let indexOfTime = history.indexOf(time);
+        return (
+            <tr>
+                <td id="solve-number" > { indexOfTime + 1} </td>
+                <td id="solve-time" > { time } </td>
+            </tr>
+        )
+    });
         
 
     return (
@@ -240,9 +261,11 @@ export default function Timer() {
 
                 <div className="times-table">
                     <table className="times-table-list">
-                        <SingleTime></SingleTime>
-                        <SingleTime></SingleTime>
-                        
+                        <tr>
+                            <th>#</th>
+                            <th>Time</th>
+                        </tr>
+                        { timesTable }
                     </table>
                 </div>
             </div>
@@ -263,7 +286,9 @@ export default function Timer() {
 
             {/* SETTINGS */}
             <div className="grid-item4">
-                <h1>SETTINGS & STUFF</h1>
+                <button class="button" onClick={addTwoSeconds}><h1>+2</h1></button>
+                <button class="button" onClick={removeSingle}><h1>Delete Single</h1></button>
+                <button class="button" onClick={clearAll}><h1>Clear All</h1></button>
             </div>
 
             {/* FOOTER */}

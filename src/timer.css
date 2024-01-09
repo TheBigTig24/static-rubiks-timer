@@ -4,7 +4,6 @@
     background: gray;
     grid-template-rows: 15vh 25vh 25vh 25vh 10vh;
     grid-template-columns: 22vw 22vw 22vw 22vw 12vw;
-    border: 2px solid;
     height: 100vh;
     margin: 0px;
 }   
@@ -12,7 +11,7 @@
 /* formats grid */
 .grid-item1 {
     background-color: lightblue;
-    border: 2px solid;
+
     grid-row: 1 / 2;
     grid-column: 1 / 6;
 
@@ -20,40 +19,42 @@
 }
 .grid-item2 {
     background-color: green;
-    border: 2px solid;
+    border: 1px solid;
+    border-right: 0px solid;
+    border-bottom: 0px solid;
     grid-row: 2 / 5;
     grid-column: 1 / 2;
 }
 .grid-item3 {
     background-color: antiquewhite;
-    border: 2px solid;
     grid-row: 2 / 5;
     grid-column: 2 / 5;
 }
 .grid-item4 {
     overflow: hidden;
     background-color: lightsalmon;
-    border: 2px solid;
+    border-left: 0px solid;
+    border-top: 1px solid;
     grid-row: 2 / 5;
     grid-column: 5 / 6;
 }
 .grid-item5 {
-    background-color: yellow;
-    border: 2px solid;
+    background-color: rgb(218, 196, 32);
+    border: 1px solid;
     grid-row: 5 / 6;
     grid-column: 1 / 6;
 }
 
 .scramble {
     height: 25%;
-    border: 2px solid;
+    border: 1px solid;
     margin: 0;
     text-align: center;
 }
 
 .stopwatch {
     height: 75%;
-    border: 2px solid;
+    border: 1px solid;
     text-align: center;
 }
 
@@ -63,22 +64,42 @@
 
 .statistics {
     height: 40%;
-    border: 2px solid;
+    border-bottom: 2px solid;
 }
 
 .times-table {
-    border: 2px  red solid;
     overflow-y: scroll;
     height: 60%;
 }
 
 .times-table-list {
-    border: 2px blue solid;
     overflow-y: auto;
     width: 100%;
-    height: 75px;
+    height: 27px;
 }
 
 .times-table-list td {
-    border: 2px pink solid;
+    border: 1px black solid;
+    text-align: center;
+}
+
+.times-table-list th {
+    border-bottom: 1px black solid;
+    text-align: center;
+}
+
+#solve-number {
+    background-color: rgb(180, 124, 50);
+}
+
+#solve-time {
+    background-color: rgb(180, 150, 100);
+}
+
+.button {
+    width: 95%;
+    height: 31%;
+    border-radius: 10px;
+    margin:  3% 2.5%;
+    background-color: plum;
 }
