@@ -14,12 +14,16 @@ export default function Timer() {
     const [pb, setPB] = useState(0);
 
     const timer = useRef();
+    const isRunningV2 = useRef(0);
 
     useEffect(() => {
         setScramble(createScramble());
+        document.addEventListener("keydown", handleKeyPress);
+        return () => {
+            document.removeEventListener('keydown', handleKeyPress);
+          };
     }, []);
 
-    // TODO: make it render here instead of the function for the spacebar and timer
     useEffect(() => {
         setAverageFive(updateAO5());
         setAverageTwelve(updateAO12());
@@ -28,11 +32,21 @@ export default function Timer() {
         setPB(updatePB());
     }, [history]);
 
+    useEffect(() => {
+        console.log("IS RUNNING UseEFFECT " + isRunning + " " + isRunningV2.current);
+        document.addEventListener("keydown", handleKeyPress);
+        return () => {
+            document.removeEventListener('keydown', handleKeyPress);
+          };
+    }, [isRunning]);
+
     // handles key press events in the input box
     const handleKeyPress = (e) => {
-
+        console.log("Handling");
+        console.log("Before If statement: " + isRunning + " " + isRunningV2.current);
         if (e.keyCode == 32) {
             if (isRunning) {
+                console.log("Stopping");
                 // stops timer
                 clearInterval(timer.current);
                 // adds current time to array
@@ -41,7 +55,9 @@ export default function Timer() {
                 setHistory(nextHistory);
                 // timer state is no longer running
                 setIsRunning(false);
+                setScramble(createScramble());
             } else {
+                console.log("Running");
                 // reset time to start at 0 every attempt
                 setTime(0);
 
@@ -51,6 +67,7 @@ export default function Timer() {
                 }, 10)
 
                 setIsRunning(true);
+                isRunningV2.current = 1;
             }
         }
     };
@@ -278,7 +295,6 @@ export default function Timer() {
                 </div>
 
                 <div className="stopwatch">
-                    <input type="text" onKeyDown={handleKeyPress}></input>
                     <h1 id="stopwatch-time" >{format(time)}</h1>
                 </div>
 
